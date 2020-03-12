@@ -13,3 +13,9 @@ Desktop.ini
 *~
 
 
+# Project
+/build
+.env
+*.source
+
+
