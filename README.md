@@ -29,15 +29,15 @@ A `type` is a tagged list, and its second element is a string of the following:
 
 
 ### Annotation
-```
+```js
 annotate(statement, environment) -> typed_term | sequence
 ```
 The `annotate` function takes an untyped parse tree of the Source program, and add 
 a type variable to every node of the tree.
 
 ### Constraint Generation
-```
-constraint(stmt) -> set of constraints
+```js
+constraint(stmt) -> {constraint}
 ```
 A `constraint` is a pair of type variable and a type, and it represents the type 
 constraints given the typed term.
