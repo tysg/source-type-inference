@@ -101,6 +101,30 @@ function name_of_name(stmt) {
     return head(tail(stmt));
 }
 
-function type_of_name(name, env) {
-    return lookup_type(name, env);
+function type_of_name(stmt) {
+    return list_ref(stmt, 2);
+}
+
+// added tagged list for primitive types
+function make_number_node(value) {
+    return list("primitive", value, number_type);
+}
+
+function make_boolean_node(value) {
+    return list("primitive", value, bool_type);
+}
+
+function make_undefined_node() {
+    return list("primitive", undefined, undefined_type);
+}
+
+function make_string_node(value) {
+    return list("primitive", value, string_type);
+}
+
+function value_of_primitive_node(stmt) {
+    return list_ref(stmt, 1);
+}
+function type_of_primitive_node(stmt) {
+    return list_ref(stmt, 2);
 }
