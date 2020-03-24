@@ -1,3 +1,5 @@
+/* Syntax tree nodes (typed and untyped) */
+
 function is_tagged_list(stmt, the_tag) {
     return is_pair(stmt) && head(stmt) === the_tag;
 }
@@ -51,6 +53,9 @@ function cond_expr_cons(stmt) {
 function cond_expr_alt(stmt) {
     return list_ref(stmt, 3);
 }
+function cond_expr_type(stmt) {
+    return list_ref(stmt, 4);
+}
 
 // sequences of statements are just represented
 // by tagged lists of statements by the parser.
@@ -87,11 +92,26 @@ function rest_statements(stmts) {
 function is_function_definition(stmt) {
     return is_tagged_list(stmt, "function_definition");
 }
-function function_definition_parameters(stmt) {
+
+/**
+ * Gets the names of the parameters, e.g. [a,b,c]
+ */
+function function_definition_parameters_names(stmt) {
     return map(x => name_of_name(x), head(tail(stmt)));
+}
+
+/**
+ * Gets the list of parameters, i.e. a list of "names"-tagged list, e.g. [["name", "a"], ["name", "b"]]
+ */
+function function_definition_parameters(stmt) {
+    return head(tail(stmt));
 }
 function function_definition_body(stmt) {
     return head(tail(tail(stmt)));
+}
+
+function function_definition_type(stmt) {
+    return list_ref(stmt, 3);
 }
 
 function is_name(stmt) {
@@ -127,4 +147,54 @@ function value_of_primitive_node(stmt) {
 }
 function type_of_primitive_node(stmt) {
     return list_ref(stmt, 2);
+}
+/* FUNCTION APPLICATION */
+
+// applications are tagged with "application"
+// and have "operator" and "operands". We compare
+// the actual argument types with the declared
+// argument types of the function being applied.
+
+function is_application(stmt) {
+    return is_tagged_list(stmt, "application");
+}
+function operator(stmt) {
+    return head(tail(stmt));
+}
+function operands(stmt) {
+    return head(tail(tail(stmt)));
+}
+
+function type_of_application_result(stmt) {
+    return list_ref(stmt, 3);
+}
+function no_operands(ops) {
+    return is_null(ops);
+}
+function first_operand(ops) {
+    return head(ops);
+}
+function rest_operands(ops) {
+    return tail(ops);
+}
+
+/* RETURN STATEMENTS */
+
+// functions return the value that results from
+// evaluating return statements
+
+function is_return_statement(stmt) {
+    return is_tagged_list(stmt, "return_statement");
+}
+function return_statement_expression(stmt) {
+    return head(tail(stmt));
+}
+
+// blocks are tagged with "block"
+function is_block(stmt) {
+    return is_tagged_list(stmt, "block");
+}
+
+function block_body(stmt) {
+    return head(tail(stmt));
 }

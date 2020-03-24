@@ -1,3 +1,7 @@
+/**
+ * Returns a clean string representation of a list. Experimental.
+ * @param {'a list} lst
+ */
 function display_list(lst) {
     if (is_null(lst)) {
         return "";
@@ -20,20 +24,16 @@ function display_list(lst) {
     }
 }
 
-// function _test_display_list() {
-// }
-
+/**
+ * Adds val to location at index in lst. Returns a new list.
+ * @param {[a]} lst
+ * @param {number} index
+ * @param {a} val
+ */
 function list_add(lst, index, val) {
     return index === 0
         ? pair(val, lst)
         : pair(head(lst), list_add(tail(lst), index - 1, val));
 }
 
-function test_list_add() {
-    let lst = list(1, 2, 3);
-    lst = list_add(lst, 3, 4);
-    display(lst);
-}
-
-const P = parse("const a = 1;");
-display_list(P);
+list_add;

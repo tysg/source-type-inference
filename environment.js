@@ -1,5 +1,11 @@
 /* TYPE ENVIRONMENTS */
 
+// // auxillary type
+// const no_type_yet = list("name", "no_type_yet");
+// function is_no_type_yet(type) {
+//     return equal_type(type, no_type_yet);
+// }
+
 // type frames are pairs with a list of names as head
 // an a list of pairs as tail (types).
 
@@ -48,7 +54,7 @@ function lookup_type(name, env) {
         } else {
             const frame = first_frame(env);
             const type = scan(frame_names(frame), frame_types(frame));
-            if (is_no_type_yet(type)) {
+            if (type === no_value_yet) {
                 error(name, "Name used before declaration: ");
             } else {
                 return type;
@@ -97,4 +103,29 @@ function extend_environment(names, types, base_env) {
                 stringify(types)
         );
     }
+}
+
+// We use a nullary function as temporary value for names whose
+// declaration has not yet been evaluated. The purpose of the
+// function definition is purely to create a unique identity;
+// the function will never be applied and its return value
+// (null) is irrelevant.
+const no_value_yet = () => null;
+
+// The function local_names collects all names declared in the
+// body statements. For a name to be included in the list of
+// local_names, it needs to be declared outside of any other
+// block or function.
+
+function insert_all(xs, ys) {
+    return is_null(xs)
+        ? ys
+        : is_null(member(head(xs), ys))
+        ? pair(head(xs), insert_all(tail(xs), ys))
+        : error(head(xs), "multiple declarations of: ");
+}
+
+const the_empty_environment = null;
+function setup_environment() {
+    return the_empty_environment;
 }
