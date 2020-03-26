@@ -12,12 +12,18 @@ const the_global_environment = setup_environment();
 // power(17, 3);                     "
 // );
 
+// const P = parse(
+//     "function test(a) { \
+//         return a * 1; \
+//     } \
+//     test(2); \
+//         "
+// );
+
 const P = parse(
-    "function test(a) { \
-        return a * 1; \
-    } \
-    test(2); \
-        "
+    "const a_negative_number = -999; \
+    const a_minus_expr = 888 - 777; \
+    "
 );
 display(P);
 display_list(annotate_top_level(P));

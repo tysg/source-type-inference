@@ -127,24 +127,7 @@ function insert_all(xs, ys) {
 
 const the_empty_environment = null;
 
-// const primitive_functions = list(
-//     list("display", display),
-//     list("error", error),
-//     list("+", (x, y) => x + y),
-//     list("-", (x, y) => x - y),
-//     list("*", (x, y) => x * y),
-//     list("/", (x, y) => x / y),
-//     list("%", (x, y) => x % y),
-//     list("===", (x, y) => x === y),
-//     list("!==", (x, y) => x !== y),
-//     list("<", (x, y) => x < y),
-//     list("<=", (x, y) => x <= y),
-//     list(">", (x, y) => x > y),
-//     list(">=", (x, y) => x >= y),
-//     list("!", x => !x)
-// );
-
-// TODO: add overloaded types
+// TODO: add built-in function types
 const non_overloaded_prim_ops = list(
     list("-", list(number_type, number_type), number_type),
     list("*", list(number_type, number_type), number_type),
@@ -154,7 +137,17 @@ const non_overloaded_prim_ops = list(
     list("||", list(bool_type, T_type), T_type),
     list("!", list(bool_type), bool_type),
     list("!", list(bool_type), bool_type),
-    list("-", list(number_type), number_type) // TODO: how is this handled?
+    list("-1", list(number_type), number_type) // handled explicitly in annotate_application
+);
+
+const overloaded_bin_prim_ops = list(
+    list("+", list(A_type, A_type), A_type),
+    list("===", list(A_type, A_type), bool_type),
+    list("!==", list(A_type, A_type), bool_type),
+    list(">", list(A_type, A_type), bool_type),
+    list("<", list(A_type, A_type), bool_type),
+    list(">=", list(A_type, A_type), bool_type),
+    list("<=", list(A_type, A_type), bool_type)
 );
 
 // // the global environment also has bindings for all
@@ -183,9 +176,19 @@ function setup_environment() {
         non_overloaded_prim_ops
     );
 
+    const overloaded_bin_prim_ops_names = map(
+        l => head(l),
+        overloaded_bin_prim_ops
+    );
+
+    const overloaded_bin_prim_ops_values = map(
+        l => make_function_type(head(tail(l)), head(tail(tail(l)))),
+        overloaded_bin_prim_ops
+    );
+
     return extend_environment(
-        non_overloaded_prim_ops_names,
-        non_overloaded_prim_ops_values,
+        append(non_overloaded_prim_ops_names, overloaded_bin_prim_ops_names),
+        append(non_overloaded_prim_ops_values, overloaded_bin_prim_ops_values),
         the_empty_environment
     );
 }

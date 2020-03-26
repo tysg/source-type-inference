@@ -80,9 +80,21 @@ function annotate_function_definition(stmt, env) {
 }
 
 function annotate_application(stmt, env) {
+    let annotated_operator = annotate(operator(stmt), env);
+
+    // HACK: explicitly handling minus operator
+    // TODO: retain minus sign line number and loc
+    if (
+        name_of_name(annotated_operator) === "-" &&
+        length(operands(stmt)) === 1
+    ) {
+        annotated_operator = annotate(list("name", "-1"), env);
+    } else {
+    }
+
     return list(
         "application",
-        annotate(operator(stmt), env),
+        annotated_operator,
         map(opd => annotate(opd, env), operands(stmt)),
         make_new_T_type(fresh_T_var())
     );
