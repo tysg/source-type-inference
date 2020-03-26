@@ -34,7 +34,7 @@ annotate(statement) -> annotated_statement
 The `annotate` function takes an untyped parse tree of the Source program, and add 
 a type variable to every node of the tree. 
 
-```
+```js
 list("name", name) -> list("name", name, type_var)
 // breaks API
 list("name", op_name, loc) -> list("name", name, type_var, loc)

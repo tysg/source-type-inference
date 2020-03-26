@@ -48,7 +48,7 @@ function local_names(stmt) {
 // with "conditional_expression"
 
 function is_conditional_expression(stmt) {
-    return is_tagged_list(stmt, "conditional_expression");
+    return is_tagged_list(stmt, "conditional_statement");
 }
 function cond_expr_pred(stmt) {
     return list_ref(stmt, 1);
@@ -132,6 +132,10 @@ function type_of_name(stmt) {
 }
 
 // added tagged list for primitive types
+function is_primitive_node(stmt) {
+    return is_tagged_list(stmt, "prim_node");
+}
+
 function make_number_node(value) {
     return list("prim_node", number_type, value);
 }

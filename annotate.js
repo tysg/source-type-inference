@@ -1,3 +1,5 @@
+/* annotate.js */
+
 function annotate(stmt, env) {
     return is_number(stmt) // prim
         ? make_number_node(stmt)
@@ -12,7 +14,8 @@ function annotate(stmt, env) {
         : is_constant_declaration(stmt)
         ? annotate_constant_declaration(stmt, env)
         : is_conditional_expression(stmt)
-        ? annotate_conditional_expression(stmt, env)
+        ? // TODO: change the name to conditional_statement
+          annotate_conditional_expression(stmt, env)
         : is_sequence(stmt)
         ? annotate_sequence(stmt, env)
         : is_application(stmt)
@@ -23,7 +26,7 @@ function annotate(stmt, env) {
         ? annotate_block(stmt, env)
         : is_return_statement(stmt)
         ? annotate_return_statement(stmt, env)
-        : error(stmt, "Unknown statement type in evaluate: ");
+        : error(stmt, "Unknown statement type in annotate: ");
 }
 
 function annotate_name(stmt, env) {
@@ -102,7 +105,7 @@ function annotate_application(stmt, env) {
 
 function annotate_conditional_expression(stmt, env) {
     return list(
-        "conditional_expression",
+        "conditional_statement",
         annotate(cond_expr_pred(stmt), env),
         annotate(cond_expr_cons(stmt), env),
         annotate(cond_expr_alt(stmt), env),
