@@ -32,8 +32,21 @@ Type inference for Source 1 supports:
 annotate(statement) -> annotated_statement
 ```
 The `annotate` function takes an untyped parse tree of the Source program, and add 
-a type variable to every node of the tree. The resulting tree should be backwards 
-compatible with an interpreter that doesn't make use of the type information.
+a type variable to every node of the tree. 
+
+```js
+list("name", name) -> list("name", name, type_var)
+// breaks API
+list("name", op_name, loc) -> list("name", name, type_var, loc)
+
+list("conditional_expression", pred, cons, alt) -> list("conditional_expression", annotated_pred, annotated_cons, annotated_alt, type_var)
+
+
+list("application", operator, operands) -> list("application", annotated_op, annotated_operands, type_var)
+
+list("function_definition", [param], body) -> list("function_definition", [annotated_param], annotated_body, type_var)
+
+```
 
 ### Top-Level Transformation
 ```js

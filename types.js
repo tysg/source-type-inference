@@ -1,51 +1,39 @@
-// Typed Term
+/* Types definition, type variables, and typed syntax tree nodes. */
 
-/** Creates a new typed_term tagged list.
- * Like, Tau1 = BOOL
- */
-function make_typed_term(type_var, type) {
-    return list("typed_term", type_var, type);
+/* Type Variables */
+
+function init_fresh_type_var_counter() {
+    let val = 0;
+    function get_fresh_type_var() {
+        val = val + 1;
+        return val;
+    }
+    return get_fresh_type_var;
 }
 
-function is_typed_term(stmt) {
-    return is_tagged_list(stmt, "typed_term");
-}
-function type_var_of_typed_term(term) {
-    return list_ref(term, 1);
-}
-function type_of_typed_term(term) {
-    return list_ref(term, 2);
+/** Gets a new type variable number upon function call. State-ful. */
+const fresh_T_var = init_fresh_type_var_counter();
+const fresh_A_var = init_fresh_type_var_counter();
+
+function make_new_T_type(num) {
+    return list("type_variable", "T", num);
 }
 
-// Type Definitions
-function is_type(stmt) {
-    return is_tagged_list(stmt, "type");
+function make_new_A_type(num) {
+    return list("type_variable", "A", num);
 }
 
-const undefined_type = list("type", "undefined");
+/* meta types */
+const T_type = list("meta", "T");
+const A_type = list("meta", "A");
 
-function new_bool_type(bool) {
-    return list("type", "bool", bool);
-}
+/* Primitive Types */
+const bool_type = list("primitive", "bool");
+const number_type = list("primitive", "number");
+const undefined_type = list("primitive", "undefined");
+const string_type = list("primitive", "string");
 
-function new_number_type(number) {
-    return list("type", "number", number);
-}
-
-function new_if_type(pred_typed_term, cons_typed_term, alt_typed_term) {
-    return list("type", "if", pred_typed_term, cons_typed_term, alt_typed_term);
-}
-
-function new_function_type(param_typed_term, return_typed_term) {
-    // TODO: support multiple params
-    return list("type", "function", param_typed_term, return_typed_term);
-}
-
-function new_let_type(name, value_typed_term) {
-    return list("type", "let", name, value_typed_term);
-}
-
-/** A var type is the type of a bounded name */
-function new_var_type(name) {
-    return list("type", "var", name);
+/* function type */
+function make_function_type(param_types, return_type) {
+    return list("function", param_types, return_type);
 }
