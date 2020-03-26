@@ -12,6 +12,12 @@ function is_tagged_list(stmt, the_tag) {
 function is_constant_declaration(stmt) {
     return is_tagged_list(stmt, "constant_declaration");
 }
+/**
+ * Returns the name of name of the constant declaration. NOT returning
+ * the second element of the tagged list.
+ * @param {} stmt
+ */
+
 function constant_declaration_name(stmt) {
     return head(tail(head(tail(stmt))));
 }
@@ -127,26 +133,26 @@ function type_of_name(stmt) {
 
 // added tagged list for primitive types
 function make_number_node(value) {
-    return list("primitive", value, number_type);
+    return list("prim_node", number_type, value);
 }
 
 function make_boolean_node(value) {
-    return list("primitive", value, bool_type);
+    return list("prim_node", bool_type, value);
 }
 
 function make_undefined_node() {
-    return list("primitive", undefined, undefined_type);
+    return list("prim_node", undefined_type, undefined);
 }
 
 function make_string_node(value) {
-    return list("primitive", value, string_type);
+    return list("prim_node", string_type, value);
 }
 
 function value_of_primitive_node(stmt) {
-    return list_ref(stmt, 1);
+    return list_ref(stmt, 2);
 }
 function type_of_primitive_node(stmt) {
-    return list_ref(stmt, 2);
+    return list_ref(stmt, 1);
 }
 /* FUNCTION APPLICATION */
 

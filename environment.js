@@ -126,6 +126,66 @@ function insert_all(xs, ys) {
 }
 
 const the_empty_environment = null;
+
+// const primitive_functions = list(
+//     list("display", display),
+//     list("error", error),
+//     list("+", (x, y) => x + y),
+//     list("-", (x, y) => x - y),
+//     list("*", (x, y) => x * y),
+//     list("/", (x, y) => x / y),
+//     list("%", (x, y) => x % y),
+//     list("===", (x, y) => x === y),
+//     list("!==", (x, y) => x !== y),
+//     list("<", (x, y) => x < y),
+//     list("<=", (x, y) => x <= y),
+//     list(">", (x, y) => x > y),
+//     list(">=", (x, y) => x >= y),
+//     list("!", x => !x)
+// );
+
+// TODO: add overloaded types
+const non_overloaded_prim_ops = list(
+    list("-", list(number_type, number_type), number_type),
+    list("*", list(number_type, number_type), number_type),
+    list("/", list(number_type, number_type), number_type),
+    list("%", list(number_type, number_type), number_type),
+    list("&&", list(bool_type, T_type), T_type),
+    list("||", list(bool_type, T_type), T_type),
+    list("!", list(bool_type), bool_type),
+    list("!", list(bool_type), bool_type),
+    list("-", list(number_type), number_type) // TODO: how is this handled?
+);
+
+// // the global environment also has bindings for all
+// // primitive non-function values, such as undefined and
+// // math_PI
+
+// const primitive_constants = list(
+//     list("undefined", undefined),
+//     list("math_PI", math_PI)
+// );
+
+// setup_environment makes an environment that has
+// one single frame, and adds a binding of all names
+// listed as primitive_functions and primitive_values.
+// The values of primitive functions are "primitive"
+// objects, see line 281 how such functions are applied
+
 function setup_environment() {
-    return the_empty_environment;
+    const non_overloaded_prim_ops_names = map(
+        l => head(l),
+        non_overloaded_prim_ops
+    );
+
+    const non_overloaded_prim_ops_values = map(
+        l => make_function_type(head(tail(l)), head(tail(tail(l)))),
+        non_overloaded_prim_ops
+    );
+
+    return extend_environment(
+        non_overloaded_prim_ops_names,
+        non_overloaded_prim_ops_values,
+        the_empty_environment
+    );
 }

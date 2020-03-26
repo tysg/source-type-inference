@@ -1,15 +1,3 @@
-function init_fresh_type_var() {
-    let val = 0;
-    function get_fresh_type_var() {
-        val = val + 1;
-        return val;
-    }
-    return get_fresh_type_var;
-}
-
-/** Gets a new type variable number upon function call. State-ful. */
-const fresh_type_var = init_fresh_type_var();
-
 function annotate(stmt, env) {
     return is_number(stmt) // prim
         ? make_number_node(stmt)
@@ -49,17 +37,21 @@ function annotate_block(stmt, env) {
     const locals = local_names(body);
     const block_env = extend_environment(
         locals,
-        build_list(length(locals), _ => fresh_type_var()),
+        build_list(length(locals), _ => make_new_T_type(fresh_T_var())),
         env
     );
-    return list("block", annotate(body, block_env), fresh_type_var());
+    return list(
+        "block",
+        annotate(body, block_env),
+        make_new_T_type(fresh_T_var())
+    );
 }
 
 function annotate_return_statement(stmt, env) {
     return list(
         "return_statement",
         annotate(return_statement_expression(stmt), env),
-        fresh_type_var()
+        make_new_T_type(fresh_T_var())
     );
 }
 
@@ -70,8 +62,9 @@ function annotate_function_definition(stmt, env) {
     const param_names = function_definition_parameters_names(stmt);
 
     const temp_values = map(_ => no_value_yet, locals);
-    const param_types = build_list(length(param_names), _ => fresh_type_var());
-
+    const param_types = build_list(length(param_names), _ =>
+        make_new_T_type(fresh_T_var())
+    );
     const func_env = extend_environment(
         insert_all(param_names, locals),
         append(param_types, temp_values),
@@ -82,7 +75,7 @@ function annotate_function_definition(stmt, env) {
         "function_definition",
         map(name => annotate(name, func_env), parameters),
         annotate(body, func_env),
-        fresh_type_var()
+        make_new_T_type(fresh_T_var())
     );
 }
 
@@ -91,7 +84,7 @@ function annotate_application(stmt, env) {
         "application",
         annotate(operator(stmt), env),
         map(opd => annotate(opd, env), operands(stmt)),
-        fresh_type_var()
+        make_new_T_type(fresh_T_var())
     );
 }
 
@@ -101,7 +94,7 @@ function annotate_conditional_expression(stmt, env) {
         annotate(cond_expr_pred(stmt), env),
         annotate(cond_expr_cons(stmt), env),
         annotate(cond_expr_alt(stmt), env),
-        fresh_type_var()
+        make_new_T_type(fresh_T_var())
     );
 }
 
@@ -109,18 +102,21 @@ function annotate_sequence(stmt, env) {
     return list(
         "sequence",
         map(stmt => annotate(stmt, env), sequence_statements(stmt)),
-        fresh_type_var() // the type of the entire sequence
+        make_new_T_type(fresh_T_var()) // the type of the entire sequence
     );
 }
 
 function annotate_constant_declaration(stmt, env) {
-    set_type(constant_declaration_name(stmt), fresh_type_var(), env);
-
+    set_type(
+        constant_declaration_name(stmt),
+        make_new_T_type(fresh_T_var()), // the type of the entire sequence
+        env
+    );
     return list(
         "constant_declaration",
-        annotate(constant_declaration_name(stmt), env),
-        annotate(constant_declaration_value(stmt), env),
-        fresh_type_var() // essentially undefined, left for compatibility
+        annotate(list_ref(stmt, 1), env),
+        annotate(list_ref(stmt, 2), env),
+        make_new_T_type(fresh_T_var()) // essentially undefined, left for compatibility
     );
 }
 

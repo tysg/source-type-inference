@@ -35,5 +35,3 @@ function list_add(lst, index, val) {
         ? pair(val, lst)
         : pair(head(lst), list_add(tail(lst), index - 1, val));
 }
-
-list_add;
