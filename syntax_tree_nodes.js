@@ -48,18 +48,21 @@ function local_names(stmt) {
 // with "conditional_expression"
 
 function is_conditional_expression(stmt) {
+    return is_tagged_list(stmt, "conditional_expression");
+}
+function is_conditional_statement(stmt) {
     return is_tagged_list(stmt, "conditional_statement");
 }
-function cond_expr_pred(stmt) {
+function cond_pred(stmt) {
     return list_ref(stmt, 1);
 }
-function cond_expr_cons(stmt) {
+function cond_cons(stmt) {
     return list_ref(stmt, 2);
 }
-function cond_expr_alt(stmt) {
+function cond_alt(stmt) {
     return list_ref(stmt, 3);
 }
-function cond_expr_type(stmt) {
+function cond_type(stmt) {
     return list_ref(stmt, 4);
 }
 

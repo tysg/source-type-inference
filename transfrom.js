@@ -7,6 +7,8 @@ function transform(stmt) {
         ? transform_constant_declaration(stmt)
         : is_conditional_expression(stmt)
         ? transform_conditional_expression(stmt)
+        : is_conditional_statement(stmt)
+        ? transform_conditional_statement(stmt)
         : is_sequence(stmt)
         ? transform_sequence(stmt)
         : is_application(stmt)
@@ -38,7 +40,7 @@ function transform_function_definition(stmt) {
     const body = function_definition_body(stmt);
     return list(
         "function_definition",
-        map(name => transform(name), parameters),
+        map((name) => transform(name), parameters),
         transform(body),
         list_ref(stmt, 3)
     );
@@ -48,7 +50,7 @@ function transform_application(stmt) {
     return list(
         "application",
         transform(operator(stmt)),
-        map(opd => transform(opd), operands(stmt)),
+        map((opd) => transform(opd), operands(stmt)),
         list_ref(stmt, 3)
     );
 }
@@ -56,22 +58,31 @@ function transform_application(stmt) {
 function transform_conditional_expression(stmt) {
     return list(
         "conditional_expression",
-        transform(cond_expr_pred(stmt)),
-        transform(cond_expr_cons(stmt)),
-        transform(cond_expr_alt(stmt)),
+        transform(cond_pred(stmt)),
+        transform(cond_cons(stmt)),
+        transform(cond_alt(stmt)),
         list_ref(stmt, 4)
     );
 }
 
+function transform_conditional_statement(stmt) {
+    return list(
+        "conditional_statement",
+        transform(cond_pred(stmt)),
+        transform(cond_cons(stmt)),
+        transform(cond_alt(stmt)),
+        list_ref(stmt, 4)
+    );
+}
 function transform_sequence(stmt) {
     const number_of_statements = length(sequence_statements(stmt));
     const transformed_exprs = map(
-        stmt => transform(stmt),
+        (stmt) => transform(stmt),
         sequence_statements(stmt)
     );
 
     // add return to the last statement
-    list_map_at(transformed_exprs, number_of_statements - 1, s =>
+    list_map_at(transformed_exprs, number_of_statements - 1, (s) =>
         list("return_statement", s, make_new_T_type(fresh_T_var()))
     );
 
