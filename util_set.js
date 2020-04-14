@@ -1,36 +1,18 @@
 // implementations of set
-/*
-set() -> set
-	returns an empty set.
 
-get_key(x) -> str
-	input: a (key, value) pair
-	returns the key of x.
-
-get_value(x) -> value
-	input: a (key, value) pair
-	returns the value of x.
-
-set_insert(s, k, v) -> set
-	returns a set that inserts (k, v) into s.
-
-set_find(s, k) -> (key,value)
-	returns the first (key, value) pair in s that has the same key as k.
-
-set_remove(s, k) -> set
-	returns a set that removes the first (key, value) pair in s that has the same key as k.
-
-set_update(s, k, v) -> set
-	returns a set that applies s[k] = v.
-
-set_union(s1, s2) -> set
-	returns the union of s1 and s2.
-*/
-
+/**
+ * set() -> set.
+ * 	returns an empty set.
+ */
 function set() {
 	return list();
 }
 
+/**
+ *  get_key(x) -> str.
+ * 	input: a (key, value) pair,
+ * 	returns the key of x. 
+ */
 function get_key(x) {
 	if (head(head(x)) === "key") {
 		return tail(head(x));
@@ -40,6 +22,12 @@ function get_key(x) {
 	}
 }
 
+/**
+ * 
+ * get_value(x) -> value.
+ * 	input: a (key, value) pair,
+ * 	returns the value of x.
+ */
 function get_value(x) {
 	if (head(tail(x)) === "value") {
 		return tail(tail(x));
@@ -49,6 +37,10 @@ function get_value(x) {
 	}
 }
 
+/**
+ * set_find(s, k) -> (key,value).
+ * 	returns the first (key, value) pair in s that has the same key as k.
+ */
 function set_find(s, k) {
 	if (is_null(s)) {
 		return null;
@@ -61,6 +53,12 @@ function set_find(s, k) {
 	}
 }
 
+/**
+ * 
+ *  set_insert(s, k, v) -> set.
+ *	returns a set that inserts (k, v) into s.
+ * 
+ */
 function set_insert(s, k, v) {
 	if (set_find(s, k) === null) {
 		const key = pair("key", k);
@@ -77,6 +75,10 @@ function set_insert(s, k, v) {
 	}
 }
 
+/** 
+ * set_remove(s, k) -> set
+ * 	returns a set that removes the first (key, value) pair in s that has the same key as k.
+ */
 function set_remove(s, k) {
 	if (is_null(s)) {
 		return null;
@@ -89,10 +91,19 @@ function set_remove(s, k) {
 	}
 }
 
+/**
+ *  set_insert(s, k, v) -> set.
+ *	returns a set that inserts (k, v) into s.
+ * 
+ */
 function set_update(s, k, v) {
 	return set_insert(set_remove(s, k), k, v);
 }
 
+/** 
+ * set_union(s1, s2) -> set.
+ * 	returns the union of s1 and s2.
+ */
 function set_union(s1, s2) {
 	let union = s1;
 	for (let i = s2; !is_null(i); i = tail(i)) {
