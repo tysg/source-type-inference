@@ -14,8 +14,9 @@ function annotate(stmt, env) {
         : is_constant_declaration(stmt)
         ? annotate_constant_declaration(stmt, env)
         : is_conditional_expression(stmt)
-        ? // TODO: change the name to conditional_statement
-          annotate_conditional_expression(stmt, env)
+        ? annotate_conditional_expression(stmt, env)
+        : is_conditional_statement(stmt)
+        ? annotate_conditional_statement(stmt, env)
         : is_sequence(stmt)
         ? annotate_sequence(stmt, env)
         : is_application(stmt)
@@ -40,7 +41,7 @@ function annotate_block(stmt, env) {
     const locals = local_names(body);
     const block_env = extend_environment(
         locals,
-        build_list(length(locals), _ => make_new_T_type(fresh_T_var())),
+        build_list(length(locals), (_) => make_new_T_type(fresh_T_var())),
         env
     );
     return list(
@@ -64,8 +65,8 @@ function annotate_function_definition(stmt, env) {
     const locals = local_names(body);
     const param_names = function_definition_parameters_names(stmt);
 
-    const temp_values = map(_ => no_value_yet, locals);
-    const param_types = build_list(length(param_names), _ =>
+    const temp_values = map((_) => no_value_yet, locals);
+    const param_types = build_list(length(param_names), (_) =>
         make_new_T_type(fresh_T_var())
     );
     const func_env = extend_environment(
@@ -76,7 +77,7 @@ function annotate_function_definition(stmt, env) {
 
     return list(
         "function_definition",
-        map(name => annotate(name, func_env), parameters),
+        map((name) => annotate(name, func_env), parameters),
         annotate(body, func_env),
         make_new_T_type(fresh_T_var())
     );
@@ -98,17 +99,27 @@ function annotate_application(stmt, env) {
     return list(
         "application",
         annotated_operator,
-        map(opd => annotate(opd, env), operands(stmt)),
+        map((opd) => annotate(opd, env), operands(stmt)),
         make_new_T_type(fresh_T_var())
     );
 }
 
 function annotate_conditional_expression(stmt, env) {
     return list(
+        "conditional_expression",
+        annotate(cond_pred(stmt), env),
+        annotate(cond_cons(stmt), env),
+        annotate(cond_alt(stmt), env),
+        make_new_T_type(fresh_T_var())
+    );
+}
+
+function annotate_conditional_statement(stmt, env) {
+    return list(
         "conditional_statement",
-        annotate(cond_expr_pred(stmt), env),
-        annotate(cond_expr_cons(stmt), env),
-        annotate(cond_expr_alt(stmt), env),
+        annotate(cond_pred(stmt), env),
+        annotate(cond_cons(stmt), env),
+        annotate(cond_alt(stmt), env),
         make_new_T_type(fresh_T_var())
     );
 }
@@ -116,7 +127,7 @@ function annotate_conditional_expression(stmt, env) {
 function annotate_sequence(stmt, env) {
     return list(
         "sequence",
-        map(stmt => annotate(stmt, env), sequence_statements(stmt)),
+        map((stmt) => annotate(stmt, env), sequence_statements(stmt)),
         make_new_T_type(fresh_T_var()) // the type of the entire sequence
     );
 }
@@ -139,7 +150,7 @@ function annotate_top_level(stmt) {
     const top_level_names = local_names(stmt);
     const program_env = extend_environment(
         top_level_names,
-        build_list(length(top_level_names), _ => no_value_yet),
+        build_list(length(top_level_names), (_) => no_value_yet),
         the_global_environment
     );
 
