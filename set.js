@@ -1,4 +1,4 @@
-// implementations of union find set
+// implementation of union find set
 /*
 set() -> set
 	returns an empty set.
@@ -74,6 +74,7 @@ function set_insert(s, k, v) {
 		const element = pair(key, value);
 		return append(s, list(element));
 	}
+	else {}
 }
 
 function set_remove(s, k) {
@@ -102,7 +103,7 @@ function set_search(s, k) {
 	else {
 		const new_s = set_search(s, t);
 		const new_t = get_value(set_find(new_s, t));
-		return set_update(new_s, v1, new_t);
+		return set_update(new_s, v, new_t);
 	}
 }
 
@@ -123,5 +124,4 @@ function set_union(s, v, t) {
 // 	}
 	return set_update(s, v, t);
 }
-
 

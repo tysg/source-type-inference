@@ -1,6 +1,6 @@
 // constraint.js
 function addtoConstraintList(constraints, first, second) {
-	return append(constraints, pair(first, second));
+	return append(constraints, list(pair(first, second)));
 }
 
 function generate_constraint(constraints, stmt, env) {
@@ -158,13 +158,15 @@ function unify(constraints) {
 		if (head(tail(first)) === "T" && set_find(unified, first) === null) {
 			unified = set_insert(unified, first, first);
 		}
+		else {}
 		if (head(tail(second)) === "T" && set_find(unified, second) === null) {
 			unified = set_insert(unified, second, second);
 		}
+		else {}
 		if (head(first) === "type_variable"
 			&& head(second) === "type_variable") {
 			unified = set_search(unified, second);
-			const t = set_find(unified, second);
+			const t = get_value(set_find(unified, second));
 			unified = set_union(unified, first, t);
 		}
 		else if (head(first) === "type_variable"
@@ -175,8 +177,9 @@ function unify(constraints) {
 				 && head(second) === "type_variable") {
 			unified = set_update(unified, second, first);             
 		}
+		else {}
 	}
-	for (let i = 0; i < length(unified); i++) {
+	for (let i = 0; i < length(unified); i = i + 1) {
 		const v = get_key(list_ref(unified, i));
 		unified = set_search(unified, v);
 	}
