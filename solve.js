@@ -1,5 +1,5 @@
 function sigma(t, sfs) {
-    const find_res = set_find_key(sfs, t);
+    const find_res = set_find_key_type(sfs, t);
     if (is_base_type(t) || is_null(find_res)) {
         return t;
     } else if (!is_null(find_res)) {
@@ -50,7 +50,8 @@ function solve(cons, solved_form_set) {
 // all function has the signature: rule_*(cons, sfs) -> (bool, sfs)
 
 function rule_1(cons, sfs) {
-    return equal(head(cons), tail(cons)) && head(head(cons)) === "primitive"
+    return equal_type(head(cons), tail(cons)) &&
+        head(head(cons)) === "primitive"
         ? pair(true, sfs) // do nothing
         : pair(false, null);
 }
@@ -68,7 +69,7 @@ function rule_3(cons, sfs) {
     const ta = tail(cons);
     const sig_ta = sigma(ta, sfs);
 
-    return is_type_var(t) && equal(sig_ta, t)
+    return is_type_var(t) && equal_type(sig_ta, t)
         ? pair(true, sfs)
         : pair(false, null);
 }
@@ -87,9 +88,12 @@ function rule_4(cons, sfs) {
     // list("function", param_types, return_type)
     // check if t is contained in Σ(t′)
     if (
-        equal(return_type_of_fn_type(sig_ta), t) ||
+        equal_type(return_type_of_fn_type(sig_ta), t) ||
         !is_null(
-            filter((param) => equal(param, t), param_types_of_fn_type(sig_ta))
+            filter(
+                (param) => equal_type(param, t),
+                param_types_of_fn_type(sig_ta)
+            )
         )
     ) {
         error("type error: rule 4 broken");
@@ -106,7 +110,7 @@ function rule_5(cons, sfs) {
     const is_t_Ai = is_type_var(t) && head(tail(t)) === "A";
 
     const is_sig_ta_addable =
-        equal(sig_ta, number_type) || equal(sig_ta, string_type);
+        equal_type(sig_ta, number_type) || equal_type(sig_ta, string_type);
 
     if (is_t_Ai && !is_type_var(sig_ta) && !is_sig_ta_addable) {
         error("type error: rule 5 broken");
@@ -151,4 +155,14 @@ function is_base_type(t) {
 
 function is_function_type(t) {
     return head(t) === "function";
+}
+
+function equal_type(t1, t2) {
+    return is_null(t1) || is_null(t2)
+        ? false
+        : head(t1) !== head(t2)
+        ? false
+        : is_type_var(t1)
+        ? list_ref(t1, 2) === list_ref(t2, 2) // type var are equated by the number
+        : equal(t1, t2);
 }
