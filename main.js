@@ -2,6 +2,7 @@
  * Packed at the end of the output script
  */
 const the_global_environment = setup_environment();
+const sigma_set = null;
 
 const power_test_prog = parse(
     "function power(x, y) {            \
@@ -36,6 +37,11 @@ const top_level_transformation_test_prog = parse(
     } "
 );
 
-const annotated = annotate_top_level(top_level_transformation_test_prog);
+const conditional_expr_test_prog = parse("true ? 1 : 2;");
+const ultra_simple_fn_prog = parse("(()=>1)();");
+
+const annotated = annotate_top_level(ultra_simple_fn_prog);
 const transformed = transform_top_level(annotated);
-display_list(transformed);
+const solved_form = collect(transformed, sigma_set);
+display(transformed);
+sigma(make_new_T_type(4), solved_form);
