@@ -134,11 +134,21 @@ function rule_6(cons, sfs) {
 function rule_7(cons, sfs) {
     const t = head(cons);
     const ta = tail(cons);
-    const sig_ta = sigma(ta, sfs);
-    const sig_t = sigma(t, sfs);
+    let sig_ta = sigma(ta, sfs);
 
-    // TODO: rule 7 addable conversion
     if (is_type_var(t) && is_null(set_find_key(sfs, t))) {
+        // addable conversion
+        const sig_t = sigma(t, sfs);
+        if (
+            is_type_var(sig_t) &&
+            head(tail(sig_t)) === "A" &&
+            is_type_var(sig_ta) &&
+            head(tail(sig_ta)) === "T"
+        ) {
+            sig_ta = change_type_var_to_addable(sig_ta);
+        } else {
+        }
+
         return pair(true, set_insert(sfs, pair(t, sig_ta)));
     } else {
         return pair(false, null);
@@ -165,4 +175,12 @@ function equal_type(t1, t2) {
         : is_type_var(t1)
         ? list_ref(t1, 2) === list_ref(t2, 2) // type var are equated by the number
         : equal(t1, t2);
+}
+
+function change_type_var_to_addable(type_var) {
+    if (!is_type_var(type_var)) {
+        error("is not a type var", type_var);
+    } else {
+        return make_new_A_type(head(tail(tail(type_var))));
+    }
 }

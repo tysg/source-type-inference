@@ -43,4 +43,4 @@ const annotated = annotate_top_level(conditional_expr_test_prog);
 const transformed = transform_top_level(annotated);
 const solved_form = collect(transformed, sigma_set);
 display(solved_form);
-sigma(make_new_A_type(2), solved_form);
+sigma(make_new_T_type(5), solved_form);
