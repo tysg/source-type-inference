@@ -12,8 +12,9 @@ function init_fresh_type_var_counter() {
 }
 
 /** Gets a new type variable number upon function call. State-ful. */
-const fresh_T_var = init_fresh_type_var_counter();
-const fresh_A_var = init_fresh_type_var_counter();
+const global_type_var_getter = init_fresh_type_var_counter();
+const fresh_T_var = global_type_var_getter;
+const fresh_A_var = global_type_var_getter;
 
 function make_new_T_type(num) {
     return list("type_variable", "T", num);
