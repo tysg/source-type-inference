@@ -21,13 +21,23 @@ function solve(cons, solved_form_set) {
     // display(cons);
     // TODO: implement rules in 1.5 Type Constraints
 
-    const rules_list = list(check_rule_1, check_rule_2);
+    const rules_list = list(
+        rule_1,
+        rule_2,
+        rule_3,
+        rule_4,
+        rule_5,
+        rule_6,
+        rule_7
+    );
 
     function solve_rules(r_list) {
         if (is_null(r_list)) {
             error("type error: no rules matched");
+        } else {
         }
-        // check_rule(cons, sfs) -> (bool, sfs)
+
+        // rule_*(cons, sfs) -> (bool, sfs)
         const result = head(r_list)(cons, solved_form_set);
         // (true, sfs) : if matched, and return the sfs
         // (false, _) : not matched, go to the next rule
@@ -37,7 +47,7 @@ function solve(cons, solved_form_set) {
     return solve_rules(rules_list);
 }
 
-// all function has the signature: check_rule(cons, sfs) -> (bool, sfs)
+// all function has the signature: rule_*(cons, sfs) -> (bool, sfs)
 
 function rule_1(cons, sfs) {
     return equal(head(cons), tail(cons)) && head(head(cons)) === "primitive"
@@ -123,6 +133,7 @@ function rule_7(cons, sfs) {
     const sig_ta = sigma(ta, sfs);
     const sig_t = sigma(t, sfs);
 
+    // TODO: rule 7 addable conversion
     if (is_type_var(t) && is_null(set_find_key(sfs, t))) {
         return pair(true, set_insert(sfs, pair(t, sig_ta)));
     } else {
