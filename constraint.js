@@ -46,9 +46,9 @@ function collect(stmt, sfs) {
         ? collect_sequence(stmt, sfs)
         : is_application(stmt)
         ? collect_application(stmt, sfs)
-        : // : is_function_definition(stmt)
-        // ? annotate_function_definition(stmt, env)
-        is_block(stmt)
+        : is_function_definition(stmt)
+        ? collect_function_definition(stmt, sfs)
+        : is_block(stmt)
         ? collect_block(stmt, sfs)
         : is_return_statement(stmt)
         ? collect_return_statement(stmt, sfs)
@@ -88,6 +88,7 @@ function collect_application(stmt, sfs) {
     const opr = operator(stmt);
     const result_type = type_of_application_result(stmt);
 
+    // TODO: may need to check whether op param types and operand types correspond
     const opd_types = map(get_type_var, opd);
     const intended_opr_type = make_function_type(opd_types, result_type);
 
@@ -119,4 +120,15 @@ function collect_return_statement(stmt, sfs) {
     const ret_exp = return_statement_expression(stmt);
     const s10 = solve(pair(get_type_var(stmt), get_type_var(ret_exp)), sfs);
     return collect(ret_exp, s10);
+}
+
+function collect_function_definition(stmt, sfs) {
+    const params = function_definition_parameters(stmt);
+    const param_types = map(get_type_var, params);
+
+    const ret = function_definition_body(stmt);
+    const fn_type = make_function_type(param_types, get_type_var(ret));
+
+    const s0 = solve(pair(get_type_var(stmt), fn_type), sfs);
+    return collect(ret, s0);
 }
