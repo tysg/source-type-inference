@@ -30,9 +30,9 @@ function generate_constraint(constraints, stmt, env) {
 	}
 	
 	function infer_conditional_expression(constraints, stmt, env) {
-		const pred = cond_expr_pred(stmt);
-		const cons = cond_expr_cons(stmt);
-		const alt = cond_expr_alt(stmt);
+		const pred = cond_pred(stmt);
+		const cons = cond_cons(stmt);
+		const alt = cond_alt(stmt);
 		
 		let newConstraints = addtoConstraintList(
 			constraints,
