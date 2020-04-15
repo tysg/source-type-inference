@@ -7,4 +7,4 @@ pack:
 	python3 scripts/pack.py
 
 run:
-	node $(JS_SLANG) ./build/type_inferred_source.js
+	node $(JS_SLANG) ./build/type_inferred_source

@@ -48,18 +48,21 @@ function local_names(stmt) {
 // with "conditional_expression"
 
 function is_conditional_expression(stmt) {
+    return is_tagged_list(stmt, "conditional_expression");
+}
+function is_conditional_statement(stmt) {
     return is_tagged_list(stmt, "conditional_statement");
 }
-function cond_expr_pred(stmt) {
+function cond_pred(stmt) {
     return list_ref(stmt, 1);
 }
-function cond_expr_cons(stmt) {
+function cond_cons(stmt) {
     return list_ref(stmt, 2);
 }
-function cond_expr_alt(stmt) {
+function cond_alt(stmt) {
     return list_ref(stmt, 3);
 }
-function cond_expr_type(stmt) {
+function cond_type(stmt) {
     return list_ref(stmt, 4);
 }
 
@@ -103,7 +106,7 @@ function is_function_definition(stmt) {
  * Gets the names of the parameters, e.g. [a,b,c]
  */
 function function_definition_parameters_names(stmt) {
-    return map(x => name_of_name(x), head(tail(stmt)));
+    return map((x) => name_of_name(x), head(tail(stmt)));
 }
 
 /**
@@ -137,19 +140,38 @@ function is_primitive_node(stmt) {
 }
 
 function make_number_node(value) {
-    return list("prim_node", number_type, value);
+    return list(
+        "prim_node",
+        number_type,
+        value,
+        make_new_A_type(fresh_A_var())
+    );
 }
 
 function make_boolean_node(value) {
-    return list("prim_node", bool_type, value);
+    return list("prim_node", bool_type, value, make_new_T_type(fresh_T_var()));
 }
 
 function make_undefined_node() {
-    return list("prim_node", undefined_type, undefined);
+    return list(
+        "prim_node",
+        undefined_type,
+        undefined,
+        make_new_T_type(fresh_T_var())
+    );
 }
 
 function make_string_node(value) {
-    return list("prim_node", string_type, value);
+    return list(
+        "prim_node",
+        string_type,
+        value,
+        make_new_A_type(fresh_A_var())
+    );
+}
+
+function type_var_of_primitive_node(stmt) {
+    return list_ref(stmt, 3);
 }
 
 function value_of_primitive_node(stmt) {
