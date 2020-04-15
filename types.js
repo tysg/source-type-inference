@@ -37,3 +37,11 @@ const string_type = list("primitive", "string");
 function make_function_type(param_types, return_type) {
     return list("function", param_types, return_type);
 }
+
+function param_types_of_fn_type(fn_type) {
+    return list_ref(fn_type, 1);
+}
+
+function return_type_of_fn_type(fn_type) {
+    return list_ref(fn_type, 2);
+}
