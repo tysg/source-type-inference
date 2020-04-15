@@ -1,5 +1,6 @@
 function set_insert(s, p) {
-    return set_contain(s, p) ? s : list_add(s, length(s) - 1, p);
+    return set_contain(s, p) ? s : pair(p, s);
+    // list_add(s, length(s) - 1, p);
 }
 
 function set_contain(s, p) {
