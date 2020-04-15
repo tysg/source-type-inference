@@ -77,3 +77,27 @@ function list_map_at(lst, index, f) {
         }
     }
 }
+
+/**
+ * Creates a list of pairs, which each pair contains elements in
+ * both lists at the same index. Assumes equal length lists. The output
+ * list reverses the sequence of elements in the input list.
+ * @param {} l1
+ * @param {*} l2
+ */
+function zip_list(l1, l2) {
+    function zip_list_helper(l1, l2, res) {
+        if (is_null(l1) && is_null(l2)) {
+            return res;
+        } else if (is_null(l1) || is_null(l2)) {
+            error("zipping list not equal length");
+        } else {
+            return zip_list_helper(
+                tail(l1),
+                tail(l2),
+                pair(pair(head(l1), head(l2)), res)
+            );
+        }
+    }
+    return zip_list_helper(l1, l2, null);
+}

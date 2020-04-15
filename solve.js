@@ -4,8 +4,13 @@ function sigma(t, sfs) {
         return t;
     } else if (!is_null(find_res)) {
         return sigma(tail(find_res), sfs);
+    } else if (is_function_type(t)) {
+        const params = param_types_of_fn_type(t);
+        const res = return_type_of_fn_type(t);
+        const sig_params = map((param) => sigma(param, sfs), params);
+        const sig_res = sigma(res, sfs);
+        return make_function_type(sig_params, sig_res);
     } else {
-        // TODO: add function type
         error("sigma not found");
     }
 }
@@ -19,8 +24,6 @@ function sigma(t, sfs) {
  */
 function solve(cons, solved_form_set) {
     // display(cons);
-    // TODO: implement rules in 1.5 Type Constraints
-
     const rules_list = list(
         rule_1,
         rule_2,
@@ -28,7 +31,8 @@ function solve(cons, solved_form_set) {
         rule_4,
         rule_5,
         rule_6,
-        rule_7
+        rule_7,
+        rule_8
     );
 
     function solve_rules(r_list) {
@@ -48,7 +52,6 @@ function solve(cons, solved_form_set) {
 }
 
 // all function has the signature: rule_*(cons, sfs) -> (bool, sfs)
-
 function rule_1(cons, sfs) {
     return equal_type(head(cons), tail(cons)) &&
         head(head(cons)) === "primitive"
@@ -85,7 +88,6 @@ function rule_4(cons, sfs) {
         return pair(false, null);
     }
 
-    // list("function", param_types, return_type)
     // check if t is contained in Σ(t′)
     if (
         equal_type(return_type_of_fn_type(sig_ta), t) ||
@@ -150,6 +152,27 @@ function rule_7(cons, sfs) {
         }
 
         return pair(true, set_insert(sfs, pair(t, sig_ta)));
+    } else {
+        return pair(false, null);
+    }
+}
+
+function rule_8(cons, sfs) {
+    const t = head(cons);
+    const ta = tail(cons);
+    if (is_function_type(t) && is_function_type(ta)) {
+        const t_params = param_types_of_fn_type(t);
+        const ta_params = param_types_of_fn_type(ta);
+        if (length(t_params) !== length(ta_params)) {
+            return pair(false, null);
+        } else {
+            // creating n constraints
+            const fn_cons = pair(
+                pair(return_type_of_fn_type(t), return_type_of_fn_type(ta)),
+                zip_list(t_params, ta_params)
+            );
+            return pair(true, accumulate(solve, sfs, fn_cons));
+        }
     } else {
         return pair(false, null);
     }
