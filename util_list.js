@@ -31,7 +31,7 @@ function display_list(lst) {
  * @param {a} val
  */
 function list_add(lst, index, val) {
-    return index === 0
+    return index === 0 || is_null(lst)
         ? pair(val, lst)
         : pair(head(lst), list_add(tail(lst), index - 1, val));
 }
