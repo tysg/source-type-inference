@@ -2,6 +2,7 @@
  * Packed at the end of the output script
  */
 const the_global_environment = setup_environment();
+const type_env = setup_environment();
 const sigma_set = null;
 
 const power_test_prog = parse(
@@ -17,6 +18,7 @@ const simple_test_prog = parse(
     "function test(a) { \
         return a * 1; \
     } \
+    test;\
     test(2); \
         "
 );
@@ -39,9 +41,13 @@ const top_level_transformation_test_prog = parse(
 
 const conditional_expr_test_prog = parse("true ? 1 : 2;");
 const ultra_simple_fn_prog = parse("(()=>1)();");
+const monomorphic_name_prog = parse("const a = 1;a;");
 
-const annotated = annotate_top_level(ultra_simple_fn_prog);
+const polymorphic_func_prog = parse("function x(a) {return a;} x(1); x(true);");
+
+const annotated = annotate(polymorphic_func_prog);
 const transformed = transform_top_level(annotated);
-const solved_form = collect(transformed, sigma_set);
-display(transformed);
-sigma(make_new_T_type(4), solved_form);
+const solved_form = collect(transformed, sigma_set, type_env);
+// display(solved_form);
+// display_list(transformed);
+display_list(sigma(make_new_T_type(14), solved_form));

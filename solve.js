@@ -25,7 +25,6 @@ function sigma(t, sfs) {
  * @param {*} solved_form_set
  */
 function solve(cons, solved_form_set) {
-    // display(cons);
     const rules_list = list(
         rule_1,
         rule_2,

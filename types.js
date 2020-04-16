@@ -39,12 +39,24 @@ function make_function_type(param_types, return_type) {
     return list("function", param_types, return_type);
 }
 
+function make_forall_type(body) {
+    return list("for_all", body);
+}
+
+function for_all_body(t) {
+    return head(tail(t));
+}
+
 function param_types_of_fn_type(fn_type) {
     return list_ref(fn_type, 1);
 }
 
 function return_type_of_fn_type(fn_type) {
     return list_ref(fn_type, 2);
+}
+
+function is_forall(t) {
+    return head(t) === "for_all";
 }
 
 function is_type_var(t) {
@@ -60,6 +72,8 @@ function is_function_type(t) {
 }
 
 function equal_type(t1, t2) {
+    // display(t1, "equaling: ");
+    // display(t2, "equaling: ");
     return is_null(t1) || is_null(t2)
         ? false
         : head(t1) !== head(t2)
@@ -76,3 +90,7 @@ function change_type_var_to_addable(type_var) {
         return make_new_A_type(head(tail(tail(type_var))));
     }
 }
+
+// function instantiate_poly_function(meta_fn) {
+
+// }
