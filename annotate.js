@@ -116,7 +116,3 @@ function annotate_constant_declaration(stmt) {
         make_new_T_type(fresh_T_var()) // essentially undefined, left for compatibility
     );
 }
-
-function annotate_top_level(stmt) {
-    return annotate(stmt);
-}

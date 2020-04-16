@@ -13,8 +13,8 @@ function init_fresh_type_var_counter() {
 
 /** Gets a new type variable number upon function call. State-ful. */
 const global_type_var_getter = init_fresh_type_var_counter();
-const fresh_T_var = global_type_var_getter;
-const fresh_A_var = global_type_var_getter;
+let fresh_T_var = global_type_var_getter;
+let fresh_A_var = global_type_var_getter;
 
 function make_new_T_type(num) {
     return list("type_variable", "T", num);
@@ -69,6 +69,10 @@ function is_base_type(t) {
 
 function is_function_type(t) {
     return head(t) === "function";
+}
+
+function is_meta_type(t) {
+    return head(t) === "meta";
 }
 
 function equal_type(t1, t2) {

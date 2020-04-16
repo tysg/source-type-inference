@@ -192,7 +192,7 @@ function replace_with_fresh(forall_type) {
             );
         } else if (is_base_type(fa_type)) {
             return fa_type;
-        } else if (is_type_var(fa_type)) {
+        } else if (is_type_var(fa_type) || is_meta_type(fa_type)) {
             const res = set_find_key_type(lut, fa_type);
             if (is_null(res)) {
                 const fresh_type =
@@ -205,7 +205,7 @@ function replace_with_fresh(forall_type) {
                 return tail(res);
             }
         } else {
-            error("unknown type in replace_with_fresh");
+            error("fatal: unknown type in replace_with_fresh");
         }
     }
     return replace(list_ref(forall_type, 1));
