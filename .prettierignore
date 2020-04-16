@@ -1,1 +1,3 @@
-./util_set.js
+reference/*
+build/*
+*.md
