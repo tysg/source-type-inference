@@ -87,54 +87,59 @@ function collect_application(stmt, sfs, env) {
 function collect_block(stmt, sfs, env) {
     /** A sequence */
     const body = block_body(stmt);
+    let stmt_list = null;
     if (is_sequence(body)) {
         /** List of statements */
-        const seq = sequence_statements(body);
-
-        // extract a list of const declr
-        // TODO: these may be null
-        const const_declarations = filter(
-            (s) => is_constant_declaration(s),
-            seq
-        );
-        const names = map(
-            (s) => constant_declaration_name(s),
-            const_declarations
-        );
-        const names_types = map(
-            (s) => get_type_var(constant_declaration_value(s)),
-            const_declarations
-        );
-        // gamma prime
-        const Gp = extend_environment(names, names_types, env);
-        const sig_10 = solve(pair(get_type_var(body), get_type_var(stmt)), sfs);
-        const sig_1 = accumulate(
-            (dec, solved) =>
-                solve(pair(get_type_var(dec), undefined_type), solved),
-            sig_10,
-            const_declarations
-        );
-        const sig_np1 = accumulate(
-            (dec, solved) =>
-                collect(constant_declaration_value(dec), solved, Gp),
-            sig_1,
-            const_declarations
-        );
-        const poly_types = map(
-            (t) => make_forall_type(sigma(t, sig_np1)),
-            names_types
-        );
-        const Gpp = extend_environment(names, poly_types, Gp);
-
-        // repackage sequence
-        const rest_stmts = filter((s) => !is_constant_declaration(s), seq);
-        const filtered_seq = list("sequence", rest_stmts, get_type_var(body));
-
-        display(Gpp);
-        return collect(filtered_seq, sig_np1, Gpp);
+        stmt_list = sequence_statements(body);
     } else {
-        // TODO: solve when there's only 1 statement
+        // only 1 statement
+        stmt_list = list(body);
     }
+
+    function unpack_if_return(stmt) {
+        if (is_return_statement(stmt)) {
+            return return_statement_expression(stmt);
+        } else {
+            return stmt;
+        }
+    }
+
+    // extract a list of const declr
+    const const_declarations = filter(
+        (s) => is_constant_declaration(unpack_if_return(s)),
+        stmt_list
+    );
+    const names = map(
+        (s) => constant_declaration_name(unpack_if_return(s)),
+        const_declarations
+    );
+    const names_types = map(
+        (s) => get_type_var(constant_declaration_value(unpack_if_return(s))),
+        const_declarations
+    );
+    // gamma prime
+    const Gp = extend_environment(names, names_types, env);
+    const sig_10 = solve(pair(get_type_var(body), get_type_var(stmt)), sfs);
+    const sig_1 = accumulate(
+        (dec, solved) => solve(pair(get_type_var(dec), undefined_type), solved),
+        sig_10,
+        const_declarations
+    );
+    const sig_np1 = accumulate(
+        (dec, solved) => collect(constant_declaration_value(dec), solved, Gp),
+        sig_1,
+        const_declarations
+    );
+    const poly_types = map(
+        (t) => make_forall_type(sigma(t, sig_np1)),
+        names_types
+    );
+    const Gpp = extend_environment(names, poly_types, Gp);
+
+    // repackage sequence
+    const rest_stmts = filter((s) => !is_constant_declaration(s), stmt_list);
+    const filtered_seq = list("sequence", rest_stmts, get_type_var(body));
+    return collect(filtered_seq, sig_np1, Gpp);
 }
 
 function collect_sequence(stmt, sfs, env) {
@@ -170,7 +175,6 @@ function collect_function_definition(stmt, sfs, env) {
 
 function collect_name(stmt, sfs, env) {
     const ta = lookup_type(name_of_name(stmt), env);
-    display(ta);
     if (is_forall(ta)) {
         return solve(pair(get_type_var(stmt), replace_with_fresh(ta)), sfs);
     } else {
@@ -190,7 +194,6 @@ function replace_with_fresh(forall_type) {
             return fa_type;
         } else if (is_type_var(fa_type)) {
             const res = set_find_key_type(lut, fa_type);
-            display(lut);
             if (is_null(res)) {
                 const fresh_type =
                     head(tail(fa_type)) === "T"
