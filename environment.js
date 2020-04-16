@@ -167,22 +167,22 @@ const overloaded_bin_prim_ops = list(
 
 function setup_environment() {
     const non_overloaded_prim_ops_names = map(
-        l => head(l),
+        (l) => head(l),
         non_overloaded_prim_ops
     );
 
     const non_overloaded_prim_ops_values = map(
-        l => make_function_type(head(tail(l)), head(tail(tail(l)))),
+        (l) => make_function_type(head(tail(l)), head(tail(tail(l)))),
         non_overloaded_prim_ops
     );
 
     const overloaded_bin_prim_ops_names = map(
-        l => head(l),
+        (l) => head(l),
         overloaded_bin_prim_ops
     );
 
     const overloaded_bin_prim_ops_values = map(
-        l => make_function_type(head(tail(l)), head(tail(tail(l)))),
+        (l) => make_function_type(head(tail(l)), head(tail(tail(l)))),
         overloaded_bin_prim_ops
     );
 
