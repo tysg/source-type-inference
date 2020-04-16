@@ -21,14 +21,12 @@ function print_type(type) {
 
 function test_1() {
     display("================================================================");
-    const sigma_set = null;
     const program = "1;";
     display("Program: " + program);
     const annotated = annotate_top_level(parse(program));
     // display(annotated);
-    display("Annotated program: " + "1 (T1);");
-    const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    display("Annotated program: " + program);
+    const solved_form = infer_program(program);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_A_type(1), solved_form)));
 }
@@ -42,7 +40,7 @@ function test_2() {
     // display(annotated);
     display("Annotated program: " + "((() => (1 (T1)) (T2)) (T3))() (T4);");
     const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    const solved_form = infer_program(program);
     // display(solved_form);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_A_type(1), solved_form)));
@@ -60,7 +58,8 @@ function test_3() {
     // display(annotated);
     display("Annotated program: " + "(true (T1) ? 1 (T2): 2 (T3)) (T4);");
     const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    const solved_form = infer_program(program);
+    // const solved_form = collect(transformed, sigma_set);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_T_type(1), solved_form)));
     display("T2 : " + print_type(sigma(make_new_A_type(2), solved_form)));
@@ -74,10 +73,11 @@ function test_4() {
     const program = "1 + 1;";
     display("Program: " + program);
     const annotated = annotate_top_level(parse(program));
-    // display(annotated);
+    display(annotated);
     display("Annotated program: " + "(1 (T1) + 1 (T2)) (T3);");
     const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    const solved_form = infer_program(program);
+    // const solved_form = collect(transformed, sigma_set);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_A_type(1), solved_form)));
     display("T2 : " + print_type(sigma(make_new_A_type(2), solved_form)));
@@ -93,7 +93,8 @@ function test_5() {
     // display(annotated);
     display("Annotated program: " + "(1 (T1) + (3 (T2) * 4 (T3)) (T4)) (T5);");
     const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    const solved_form = infer_program(program);
+    // const solved_form = collect(transformed, sigma_set);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_A_type(1), solved_form)));
     display("T2 : " + print_type(sigma(make_new_A_type(2), solved_form)));
@@ -111,7 +112,8 @@ function test_6() {
     // display(annotated);
     display("Annotated program: " + "(1 (T1) + 3 (T2)) (T3) * 4 (T4)) (T5);");
     const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    const solved_form = infer_program(program);
+    // const solved_form = collect(transformed, sigma_set);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_A_type(1), solved_form)));
     display("T2 : " + print_type(sigma(make_new_A_type(2), solved_form)));
@@ -129,7 +131,8 @@ function test_7() {
     // display(annotated);
     display("Annotated program: " + "! ((1 (T1) === 1 (T2)) (T3)) (T4);");
     const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    const solved_form = infer_program(program);
+    // const solved_form = collect(transformed, sigma_set);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_A_type(1), solved_form)));
     display("T2 : " + print_type(sigma(make_new_A_type(2), solved_form)));
@@ -149,7 +152,8 @@ function test_8() {
             "((! ((1 (T1) === 1 (T2)) (T3)) (T4)) ? 1 (T5) : 2 (T6)) (T7);"
     );
     const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    const solved_form = infer_program(program);
+    // const solved_form = collect(transformed, sigma_set);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_A_type(1), solved_form)));
     display("T2 : " + print_type(sigma(make_new_A_type(2), solved_form)));
@@ -171,7 +175,8 @@ function test_9() {
         "Annotated program: " + "((const x (T1) = 1 (T2)) (T3); x (T1);) (T4)"
     );
     const transformed = transform_top_level(annotated);
-    const solved_form = collect(transformed, sigma_set);
+    const solved_form = infer_program(program);
+    // const solved_form = collect(transformed, sigma_set);
     display("Types:");
     display("T1 : " + print_type(sigma(make_new_T_type(1), solved_form)));
     display("T2 : " + print_type(sigma(make_new_A_type(2), solved_form)));
@@ -187,6 +192,6 @@ function test_9() {
 // test_6();
 // test_7();
 // test_8();
-test_9();
+// test_9();
 // test_10();
 // test_11();
