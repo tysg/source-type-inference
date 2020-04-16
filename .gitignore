@@ -17,5 +17,6 @@ Desktop.ini
 /build
 .env
 *.source
+node_modules/
 
 
