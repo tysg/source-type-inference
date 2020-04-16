@@ -45,5 +45,6 @@ const monomorphic_name_prog = parse("const a = 1;const b = 2; a;");
 const annotated = annotate(monomorphic_name_prog);
 const transformed = transform_top_level(annotated);
 const solved_form = collect(transformed, sigma_set, type_env);
+display(solved_form);
 display(transformed);
-sigma(make_new_T_type(9), solved_form);
+sigma(make_new_T_type(1), solved_form);

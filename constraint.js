@@ -170,6 +170,7 @@ function collect_function_definition(stmt, sfs, env) {
 
 function collect_name(stmt, sfs, env) {
     const ta = lookup_type(name_of_name(stmt), env);
+    display(ta);
     if (is_forall(ta)) {
         return solve(pair(get_type_var(stmt), replace_with_fresh(ta)), sfs);
     } else {
@@ -177,24 +178,25 @@ function collect_name(stmt, sfs, env) {
     }
 }
 
-function replace_with_fresh(fa_type) {
+function replace_with_fresh(forall_type) {
     let lut = null;
     function replace(fa_type) {
         if (is_function_type(fa_type)) {
             return make_function_type(
-                map(replace, param_types_of_fn_type),
-                replace(return_type_of_fn_type)
+                map(replace, param_types_of_fn_type(fa_type)),
+                replace(return_type_of_fn_type(fa_type))
             );
         } else if (is_base_type(fa_type)) {
             return fa_type;
         } else if (is_type_var(fa_type)) {
             const res = set_find_key_type(lut, fa_type);
+            display(lut);
             if (is_null(res)) {
                 const fresh_type =
                     head(tail(fa_type)) === "T"
                         ? make_new_T_type(fresh_T_var())
                         : make_new_A_type(fresh_A_var());
-                set_insert_cons(fa_type, fresh_type);
+                lut = set_insert_cons(lut, pair(fa_type, fresh_type));
                 return fresh_type;
             } else {
                 return tail(res);
@@ -203,5 +205,5 @@ function replace_with_fresh(fa_type) {
             error("unknown type in replace_with_fresh");
         }
     }
-    return replace(list_ref(fa_type, 1));
+    return replace(list_ref(forall_type, 1));
 }
