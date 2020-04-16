@@ -1,13 +1,14 @@
 /**
  * Packed at the end of the output script
  */
-const power_test_prog =
+const power_test_prog = parse(
     "function power(x, y) {            \
     return y === 0                \
         ? 1                       \
         : x * power(x, y - 1);    \
 }                                 \
-power(17, 3);                     ";
+power(17, 3);                     "
+);
 
 const simple_test_prog = parse(
     "function test(a) { \
@@ -39,6 +40,10 @@ const ultra_simple_fn_prog = "(()=>1)();";
 const monomorphic_name_prog = "const a = 1;a;";
 const polymorphic_func_prog = "function x(a) {return a;} x(1); x(true);";
 
+function check_type_var(number, sfs) {
+    return sigma(make_new_T_type(number), sfs);
+}
+
 function infer_program(prog) {
     const new_counter = init_fresh_type_var_counter();
     fresh_A_var = new_counter;
@@ -51,9 +56,19 @@ function infer_program(prog) {
     return collect(transformed, sigma_set, type_env);
 }
 
-function check_type_var(number, sfs) {
-    return sigma(make_new_T_type(number), sfs);
-}
-
-const solved = infer_program(polymorphic_func_prog);
-display(check_type_var(9, solved));
+test_1();
+test_2();
+test_3();
+test_4();
+test_5();
+test_6();
+test_7();
+test_8();
+test_9();
+test_10();
+test_11();
+test_12();
+// test_13();
+test_14();
+// test_15();
+// test_16();
