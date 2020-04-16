@@ -106,7 +106,6 @@ function rule_4(cons, sfs) {
 }
 
 function rule_5(cons, sfs) {
-    display(cons);
     const t = head(cons);
     const ta = tail(cons);
     const sig_ta = sigma(ta, sfs);
