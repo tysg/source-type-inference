@@ -172,7 +172,10 @@ function setup_environment() {
     );
 
     const non_overloaded_prim_ops_values = map(
-        (l) => make_function_type(head(tail(l)), head(tail(tail(l)))),
+        (l) =>
+            make_forall_type(
+                make_function_type(head(tail(l)), head(tail(tail(l))))
+            ),
         non_overloaded_prim_ops
     );
 
@@ -182,7 +185,10 @@ function setup_environment() {
     );
 
     const overloaded_bin_prim_ops_values = map(
-        (l) => make_function_type(head(tail(l)), head(tail(tail(l)))),
+        (l) =>
+            make_forall_type(
+                make_function_type(head(tail(l)), head(tail(tail(l))))
+            ),
         overloaded_bin_prim_ops
     );
 

@@ -1,9 +1,6 @@
 function sigma(t, sfs) {
-    const find_res = set_find_key_type(sfs, t);
-    if (is_base_type(t) || is_null(find_res)) {
+    if (is_base_type(t)) {
         return t;
-    } else if (!is_null(find_res)) {
-        return sigma(tail(find_res), sfs);
     } else if (is_function_type(t)) {
         const params = param_types_of_fn_type(t);
         const res = return_type_of_fn_type(t);
@@ -11,7 +8,12 @@ function sigma(t, sfs) {
         const sig_res = sigma(res, sfs);
         return make_function_type(sig_params, sig_res);
     } else {
-        error("sigma not found");
+        const find_res = set_find_key_type(sfs, t);
+        if (is_null(find_res)) {
+            return t;
+        } else {
+            return sigma(tail(find_res), sfs);
+        }
     }
 }
 
@@ -23,7 +25,6 @@ function sigma(t, sfs) {
  * @param {*} solved_form_set
  */
 function solve(cons, solved_form_set) {
-    // display(cons);
     const rules_list = list(
         rule_1,
         rule_2,

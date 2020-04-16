@@ -1,6 +1,6 @@
 /* annotate.js */
 
-function annotate(stmt, env) {
+function annotate(stmt) {
     return is_number(stmt) // prim
         ? make_number_node(stmt)
         : is_boolean(stmt) // prim
@@ -10,81 +10,57 @@ function annotate(stmt, env) {
         : is_string(stmt) // prim
         ? make_string_node(stmt)
         : is_name(stmt)
-        ? annotate_name(stmt, env)
+        ? annotate_name(stmt)
         : is_constant_declaration(stmt)
-        ? annotate_constant_declaration(stmt, env)
+        ? annotate_constant_declaration(stmt)
         : is_conditional_expression(stmt)
-        ? annotate_conditional_expression(stmt, env)
+        ? annotate_conditional_expression(stmt)
         : is_conditional_statement(stmt)
-        ? annotate_conditional_statement(stmt, env)
+        ? annotate_conditional_statement(stmt)
         : is_sequence(stmt)
-        ? annotate_sequence(stmt, env)
+        ? annotate_sequence(stmt)
         : is_application(stmt)
-        ? annotate_application(stmt, env)
+        ? annotate_application(stmt)
         : is_function_definition(stmt)
-        ? annotate_function_definition(stmt, env)
+        ? annotate_function_definition(stmt)
         : is_block(stmt)
-        ? annotate_block(stmt, env)
+        ? annotate_block(stmt)
         : is_return_statement(stmt)
-        ? annotate_return_statement(stmt, env)
+        ? annotate_return_statement(stmt)
         : error(stmt, "Unknown statement type in annotate: ");
 }
 
-function annotate_name(stmt, env) {
-    // assume name is declared before being called
-    const type_var = lookup_type(name_of_name(stmt), env);
-    return list_add(stmt, 2, type_var);
+function annotate_name(stmt) {
+    return list_add(stmt, 2, make_new_T_type(fresh_T_var()));
 }
 
-function annotate_block(stmt, env) {
+function annotate_block(stmt) {
     const body = block_body(stmt);
-    const locals = local_names(body);
-    const block_env = extend_environment(
-        locals,
-        build_list(length(locals), (_) => make_new_T_type(fresh_T_var())),
-        env
-    );
-    return list(
-        "block",
-        annotate(body, block_env),
-        make_new_T_type(fresh_T_var())
-    );
+    return list("block", annotate(body), make_new_T_type(fresh_T_var()));
 }
 
-function annotate_return_statement(stmt, env) {
+function annotate_return_statement(stmt) {
     return list(
         "return_statement",
-        annotate(return_statement_expression(stmt), env),
+        annotate(return_statement_expression(stmt)),
         make_new_T_type(fresh_T_var())
     );
 }
 
-function annotate_function_definition(stmt, env) {
+function annotate_function_definition(stmt) {
     const parameters = function_definition_parameters(stmt);
     const body = function_definition_body(stmt);
-    const locals = local_names(body);
-    const param_names = function_definition_parameters_names(stmt);
-
-    const temp_values = map((_) => no_value_yet, locals);
-    const param_types = build_list(length(param_names), (_) =>
-        make_new_T_type(fresh_T_var())
-    );
-    const func_env = extend_environment(
-        insert_all(param_names, locals),
-        append(param_types, temp_values),
-        env
-    );
 
     return list(
         "function_definition",
-        map((name) => annotate(name, func_env), parameters),
-        annotate(body, func_env),
+        map(annotate, parameters),
+        annotate(body),
         make_new_T_type(fresh_T_var())
     );
 }
 
-function annotate_application(stmt, env) {
-    let annotated_operator = annotate(operator(stmt), env);
+function annotate_application(stmt) {
+    let annotated_operator = annotate(operator(stmt));
 
     // HACK: explicitly handling minus operator
     // TODO: retain minus sign line number and loc
@@ -92,67 +68,51 @@ function annotate_application(stmt, env) {
         name_of_name(annotated_operator) === "-" &&
         length(operands(stmt)) === 1
     ) {
-        annotated_operator = annotate(list("name", "-1"), env);
+        annotated_operator = annotate(list("name", "-1"));
     } else {
     }
 
     return list(
         "application",
         annotated_operator,
-        map((opd) => annotate(opd, env), operands(stmt)),
+        map(annotate, operands(stmt)),
         make_new_T_type(fresh_T_var())
     );
 }
 
-function annotate_conditional_expression(stmt, env) {
+function annotate_conditional_expression(stmt) {
     return list(
         "conditional_expression",
-        annotate(cond_pred(stmt), env),
-        annotate(cond_cons(stmt), env),
-        annotate(cond_alt(stmt), env),
+        annotate(cond_pred(stmt)),
+        annotate(cond_cons(stmt)),
+        annotate(cond_alt(stmt)),
         make_new_T_type(fresh_T_var())
     );
 }
 
-function annotate_conditional_statement(stmt, env) {
+function annotate_conditional_statement(stmt) {
     return list(
         "conditional_statement",
-        annotate(cond_pred(stmt), env),
-        annotate(cond_cons(stmt), env),
-        annotate(cond_alt(stmt), env),
+        annotate(cond_pred(stmt)),
+        annotate(cond_cons(stmt)),
+        annotate(cond_alt(stmt)),
         make_new_T_type(fresh_T_var())
     );
 }
 
-function annotate_sequence(stmt, env) {
+function annotate_sequence(stmt) {
     return list(
         "sequence",
-        map((stmt) => annotate(stmt, env), sequence_statements(stmt)),
+        map(annotate, sequence_statements(stmt)),
         make_new_T_type(fresh_T_var()) // the type of the entire sequence
     );
 }
 
-function annotate_constant_declaration(stmt, env) {
-    set_type(
-        constant_declaration_name(stmt),
-        make_new_T_type(fresh_T_var()), // the type of the entire sequence
-        env
-    );
+function annotate_constant_declaration(stmt) {
     return list(
         "constant_declaration",
-        annotate(list_ref(stmt, 1), env),
-        annotate(list_ref(stmt, 2), env),
+        annotate(list_ref(stmt, 1)),
+        annotate(list_ref(stmt, 2)),
         make_new_T_type(fresh_T_var()) // essentially undefined, left for compatibility
     );
-}
-
-function annotate_top_level(stmt) {
-    const top_level_names = local_names(stmt);
-    const program_env = extend_environment(
-        top_level_names,
-        build_list(length(top_level_names), (_) => no_value_yet),
-        the_global_environment
-    );
-
-    return annotate(stmt, program_env);
 }
