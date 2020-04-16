@@ -1,18 +1,13 @@
 /**
  * Packed at the end of the output script
  */
-const the_global_environment = setup_environment();
-const type_env = setup_environment();
-const sigma_set = null;
-
-const power_test_prog = parse(
+const power_test_prog =
     "function power(x, y) {            \
     return y === 0                \
         ? 1                       \
         : x * power(x, y - 1);    \
 }                                 \
-power(17, 3);                     "
-);
+power(17, 3);                     ";
 
 const simple_test_prog = parse(
     "function test(a) { \
@@ -39,15 +34,24 @@ const top_level_transformation_test_prog = parse(
     } "
 );
 
-const conditional_expr_test_prog = parse("true ? 1 : 2;");
-const ultra_simple_fn_prog = parse("(()=>1)();");
-const monomorphic_name_prog = parse("const a = 1;a;");
+const conditional_expr_test_prog = "true ? 1 : 2;";
+const ultra_simple_fn_prog = "(()=>1)();";
+const monomorphic_name_prog = "const a = 1;a;";
 
-const polymorphic_func_prog = parse("function x(a) {return a;} x(1); x(true);");
+const polymorphic_func_prog = "function x(a) {return a;} x(1); x(true);";
 
-const annotated = annotate(polymorphic_func_prog);
-const transformed = transform_top_level(annotated);
-const solved_form = collect(transformed, sigma_set, type_env);
-// display(solved_form);
-// display_list(transformed);
-display_list(sigma(make_new_T_type(14), solved_form));
+function infer_program(prog) {
+    const sigma_set = null;
+    const type_env = setup_environment();
+    const annotated = annotate(parse(prog));
+    const transformed = transform_top_level(annotated);
+    return collect(transformed, sigma_set, type_env);
+}
+
+function check_type_var(number, sfs) {
+    return sigma(make_new_T_type(number), sfs);
+}
+
+const solved = infer_program("1+1;");
+check_type_var(4, solved);
+// display_list(annotate(parse("1+1;")));

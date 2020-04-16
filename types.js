@@ -71,6 +71,10 @@ function is_function_type(t) {
     return head(t) === "function";
 }
 
+function is_meta_type(t) {
+    return head(t) === "meta";
+}
+
 function equal_type(t1, t2) {
     // display(t1, "equaling: ");
     // display(t2, "equaling: ");
