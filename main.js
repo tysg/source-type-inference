@@ -51,9 +51,20 @@ function infer_program(prog) {
     const sigma_set = null;
     const type_env = setup_environment();
     const annotated = annotate(parse(prog));
-    // display(annotated);
     const transformed = transform_top_level(annotated);
+    // display(annotated);
     return collect(transformed, sigma_set, type_env);
+}
+
+function iterate_sigma(sfs, n) {
+    const m = build_list(n, (x) => x + 1);
+    for_each(
+        (num) =>
+            display(
+                stringify(num) + ": " + print_type(check_type_var(num, sfs))
+            ),
+        m
+    );
 }
 
 test_1();
@@ -70,5 +81,5 @@ test_11();
 test_12();
 // test_13();
 test_14();
-// test_15();
-// test_16();
+test_15();
+test_16();

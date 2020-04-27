@@ -76,12 +76,13 @@ function collect_application(stmt, sfs, env) {
     const opd_types = map(get_type_var, opd);
     const intended_opr_type = make_function_type(opd_types, result_type);
 
-    // t0 = (t1..tn) -> t
-    const s10 = solve(pair(get_type_var(opr), intended_opr_type), sfs);
-    const s1 = collect(opr, s10, env);
-
     // collect operands 1 by 1
-    return accumulate((op, solved) => collect(op, solved, env), s1, opd);
+    const s0 = accumulate((op, solved) => collect(op, solved, env), sfs, opd);
+
+    // t0 = (t1..tn) -> t
+    const s10 = solve(pair(get_type_var(opr), intended_opr_type), s0);
+    const s1 = collect(opr, s10, env);
+    return s1;
 }
 
 function collect_block(stmt, sfs, env) {
