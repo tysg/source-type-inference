@@ -280,9 +280,7 @@ function test_14() {
     display("Annotated program: " + "(true (T1) + 1 (T2)) (T3);");
     display("Test should throw type error.");
     const solved_form = infer_program(program);
-    display("T1 : " + print_type(sigma(make_new_T_type(1), solved_form)));
-    display("T2 : " + print_type(sigma(make_new_A_type(2), solved_form)));
-    display("T3 : " + print_type(sigma(make_new_A_type(3), solved_form)));
+    iterate_sigma(solved_form, 4);
 }
 
 function test_15() {
