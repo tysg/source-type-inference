@@ -1,5 +1,15 @@
 {
     "devDependencies": {
         "prettier": "2.0.4"
+    },
+    "scripts": {
+        "format": "node_modules/.bin/prettier --write . --tab-width 4 \"*.js\"",
+        "test": "./scripts/test.sh",
+        "start": "node_modules/.bin/js-slang --chapter=4 -e \"$(< build/type_inferred_source)\"",
+        "bundle": "mkdir -p build && python3 scripts/pack.py"
+    },
+    "dependencies": {
+        "js-slang": "^0.4.33",
+        "lodash": "^4.17.13"
     }
 }

@@ -18,5 +18,6 @@ Desktop.ini
 .env
 *.source
 node_modules/
+yarn.lock
 
 
