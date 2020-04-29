@@ -16,9 +16,8 @@ Desktop.ini
 # Project
 /build
 .env
-*.source
 node_modules/
 yarn.lock
-type_inferred_source.js
+source-1-type-inference.js
 
 
