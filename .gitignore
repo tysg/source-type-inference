@@ -19,5 +19,6 @@ Desktop.ini
 *.source
 node_modules/
 yarn.lock
+type_inferred_source.js
 
 

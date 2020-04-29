@@ -3,9 +3,9 @@
         "prettier": "2.0.4"
     },
     "scripts": {
-        "format": "node_modules/.bin/prettier --write . --tab-width 4 \"*.js\"",
+        "format": "node_modules/.bin/prettier --write . --tab-width 4 \"src/*.js\"",
         "test": "./scripts/test.sh",
-        "start": "node_modules/.bin/js-slang --chapter=4 -e \"$(< build/type_inferred_source)\"",
+        "start": "node node_modules/js-slang/dist/repl/repl.js --chapter=4 -e \"$(< source-1-type-inference.js)\"",
         "bundle": "mkdir -p build && python3 scripts/pack.py"
     },
     "dependencies": {

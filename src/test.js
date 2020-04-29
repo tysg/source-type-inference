@@ -20,14 +20,19 @@ function print_type(type) {
         : error("Unknown type: " + stringify(type));
 }
 
-function test_1() {
-    display("================================================================");
-    const program = "1;";
-    const solved_form = infer_program(program);
-    display("Program: " + program);
-    display("Annotated program: " + "1 (T1);");
-    display("Types:");
-    display("T1 : " + print_type(sigma(make_new_A_type(1), solved_form)));
+function check_type_var(number, sfs) {
+    return sigma(make_new_T_type(number), sfs);
+}
+
+function iterate_sigma(sfs, n) {
+    const m = build_list(n, (x) => x + 1);
+    for_each(
+        (num) =>
+            display(
+                stringify(num) + ": " + print_type(check_type_var(num, sfs))
+            ),
+        m
+    );
 }
 
 function test_2() {
