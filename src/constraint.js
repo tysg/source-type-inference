@@ -34,6 +34,8 @@ function collect(stmt, sfs, env) {
         ? collect_sequence(stmt, sfs, env)
         : is_return_statement(stmt)
         ? collect_return_statement(stmt, sfs, env)
+        : is_conditional_statement(stmt)
+        ? collect_conditional_statement(stmt, sfs, env)
         : is_block(stmt)
         ? collect_block(stmt, sfs, env)
         : error(stmt, "Unknown statement type in collect: ");
@@ -106,10 +108,16 @@ function collect_block(stmt, sfs, env) {
     }
 
     // extract a list of const declr
-    const const_declarations = filter(
+    const const_declarations_with_ret = filter(
         (s) => is_constant_declaration(unpack_if_return(s)),
         stmt_list
     );
+
+    const const_declarations = map(
+        (s) => unpack_if_return(s),
+        const_declarations_with_ret
+    );
+
     const names = map(
         (s) => constant_declaration_name(unpack_if_return(s)),
         const_declarations
@@ -138,9 +146,13 @@ function collect_block(stmt, sfs, env) {
     const Gpp = extend_environment(names, poly_types, Gp);
 
     // repackage sequence
-    const rest_stmts = filter((s) => !is_constant_declaration(s), stmt_list);
+    const rest_stmts = filter(
+        (s) => !is_constant_declaration(unpack_if_return(s)),
+        stmt_list
+    );
     const filtered_seq = list("sequence", rest_stmts, get_type_var(body));
-    return collect(filtered_seq, sig_np1, Gpp);
+
+    return is_null(rest_stmts) ? sig_np1 : collect(filtered_seq, sig_np1, Gpp);
 }
 
 function collect_sequence(stmt, sfs, env) {
@@ -157,6 +169,19 @@ function collect_return_statement(stmt, sfs, env) {
     const ret_exp = return_statement_expression(stmt);
     const s10 = solve(pair(get_type_var(stmt), get_type_var(ret_exp)), sfs);
     return collect(ret_exp, s10, env);
+}
+
+function collect_conditional_statement(stmt, sfs, env) {
+    const cond_stmt_cons = list(
+        pair(get_type_var(cond_pred(stmt)), bool_type),
+        pair(get_type_var(stmt), get_type_var(cond_cons(stmt))),
+        pair(get_type_var(cond_cons(stmt)), get_type_var(cond_alt(stmt)))
+    );
+    const s10 = accumulate(solve, sfs, cond_stmt_cons);
+    const s1 = collect(cond_pred(stmt), s10, env);
+    const s2 = collect(cond_cons(stmt), s1, env);
+    const s3 = collect(cond_alt(stmt), s2, env);
+    return s3;
 }
 
 function collect_function_definition(stmt, sfs, env) {
