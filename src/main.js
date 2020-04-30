@@ -1,6 +1,4 @@
-/**
- * Packed at the end of the output script
- */
+// main.js: bundled at the end of the output script
 const power_test_prog = parse(
     "function power(x, y) {            \
     return y === 0                \

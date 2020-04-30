@@ -1,4 +1,4 @@
-/* annotate.js */
+// annotate.js: untyped syntax tree annotation
 
 function annotate(stmt) {
     return is_number(stmt) // prim
@@ -104,7 +104,7 @@ function annotate_sequence(stmt) {
     return list(
         "sequence",
         map(annotate, sequence_statements(stmt)),
-        make_new_T_type(fresh_T_var()) // the type of the entire sequence
+        make_new_T_type(fresh_T_var())
     );
 }
 
@@ -113,6 +113,6 @@ function annotate_constant_declaration(stmt) {
         "constant_declaration",
         annotate(list_ref(stmt, 1)),
         annotate(list_ref(stmt, 2)),
-        make_new_T_type(fresh_T_var()) // essentially undefined, left for compatibility
+        make_new_T_type(fresh_T_var())
     );
 }

@@ -1,3 +1,4 @@
+// util_list.js: useful functions to deal with lists
 /**
  * Returns a clean string representation of a list. Experimental.
  * @param {'a list} lst

@@ -1,4 +1,4 @@
-/* Types definition, type variables, and typed syntax tree nodes. */
+// types.js: types definition, type variables, and typed syntax tree nodes
 
 /* Type Variables */
 
@@ -76,8 +76,6 @@ function is_meta_type(t) {
 }
 
 function equal_type(t1, t2) {
-    // display(t1, "equaling: ");
-    // display(t2, "equaling: ");
     return is_null(t1) || is_null(t2)
         ? false
         : head(t1) !== head(t2)
@@ -94,7 +92,3 @@ function change_type_var_to_addable(type_var) {
         return make_new_A_type(head(tail(tail(type_var))));
     }
 }
-
-// function instantiate_poly_function(meta_fn) {
-
-// }

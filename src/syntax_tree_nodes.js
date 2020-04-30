@@ -1,4 +1,4 @@
-/* Syntax tree nodes (typed and untyped) */
+// syntax_tree_nodes.js: syntax tree nodes (typed and untyped)
 
 function is_tagged_list(stmt, the_tag) {
     return is_pair(stmt) && head(stmt) === the_tag;
@@ -90,14 +90,6 @@ function first_statement(stmts) {
 function rest_statements(stmts) {
     return tail(stmts);
 }
-
-// function definitions are tagged with "function_definition"
-// have a list of "parameters" and a "body" statement
-// Note that in this language, function definitions only occur
-// in constant declarations, as a result of parsing
-// statements of the form: function f(x) {...}
-// Therefore, we do not need a function type_function_definition.
-
 function is_function_definition(stmt) {
     return is_tagged_list(stmt, "function_definition");
 }
@@ -181,11 +173,6 @@ function type_of_primitive_node(stmt) {
     return list_ref(stmt, 1);
 }
 /* FUNCTION APPLICATION */
-
-// applications are tagged with "application"
-// and have "operator" and "operands". We compare
-// the actual argument types with the declared
-// argument types of the function being applied.
 
 function is_application(stmt) {
     return is_tagged_list(stmt, "application");

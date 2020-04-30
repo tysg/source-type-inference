@@ -1,3 +1,5 @@
+// solve.js: constraint solving and unification
+
 function sigma(t, sfs) {
     if (is_base_type(t)) {
         return t;
