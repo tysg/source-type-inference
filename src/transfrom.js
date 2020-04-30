@@ -1,4 +1,4 @@
-/* transform.js */
+// transform.js: top-level transformation
 
 function transform(stmt) {
     return is_primitive_node(stmt) || is_name(stmt)

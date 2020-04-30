@@ -1,4 +1,4 @@
-// apply types
+// apply_types.js
 
 function apply(stmt, sfs) {
     return is_primitive_node(stmt)
@@ -90,7 +90,6 @@ function apply_conditional_statement(stmt, sfs) {
 }
 
 function apply_sequence(stmt, sfs) {
-    const number_of_statements = length(sequence_statements(stmt));
     const applied_exprs = map(
         (stmt) => apply(stmt, sfs),
         sequence_statements(stmt)

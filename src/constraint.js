@@ -1,4 +1,4 @@
-/* constraint.js */
+// constraint.js: constraint generation
 
 function get_type_var(stmt) {
     return is_primitive_node(stmt) // prim
@@ -18,8 +18,6 @@ function get_type_var(stmt) {
  * @param {*} solved_form_set
  */
 function collect(stmt, sfs, env) {
-    // display(stmt, "now collecting:");
-    // WIP
     return is_name(stmt)
         ? collect_name(stmt, sfs, env)
         : is_primitive_node(stmt) // prim
@@ -74,7 +72,6 @@ function collect_application(stmt, sfs, env) {
     const opr = operator(stmt);
     const result_type = type_of_application_result(stmt);
 
-    // TODO: may need to check whether op param types and operand types correspond
     const opd_types = map(get_type_var, opd);
     const intended_opr_type = make_function_type(opd_types, result_type);
 

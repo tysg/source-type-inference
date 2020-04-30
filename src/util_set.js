@@ -1,3 +1,4 @@
+// util_set.js: a hand-rolled key-value data structure
 function set_insert(s, p) {
     return set_contain(s, p) ? s : pair(p, s);
 }

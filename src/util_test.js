@@ -1,4 +1,4 @@
-// testing
+// util_test.js: useful functions for tests
 function print_type(type) {
     function print_args(ts) {
         return is_null(ts)
