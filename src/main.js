@@ -40,10 +40,6 @@ const ultra_simple_fn_prog = "(()=>1)();";
 const monomorphic_name_prog = "const a = 1;a;";
 const polymorphic_func_prog = "function x(a) {return a;} x(1); x(true);";
 
-function check_type_var(number, sfs) {
-    return sigma(make_new_T_type(number), sfs);
-}
-
 function infer_program(prog) {
     const new_counter = init_fresh_type_var_counter();
     fresh_A_var = new_counter;
@@ -52,34 +48,6 @@ function infer_program(prog) {
     const type_env = setup_environment();
     const annotated = annotate(parse(prog));
     const transformed = transform_top_level(annotated);
-    // display(annotated);
+    // display(transformed);
     return collect(transformed, sigma_set, type_env);
 }
-
-function iterate_sigma(sfs, n) {
-    const m = build_list(n, (x) => x + 1);
-    for_each(
-        (num) =>
-            display(
-                stringify(num) + ": " + print_type(check_type_var(num, sfs))
-            ),
-        m
-    );
-}
-
-test_1();
-test_2();
-test_3();
-test_4();
-test_5();
-test_6();
-test_7();
-test_8();
-test_9();
-test_10();
-test_11();
-test_12();
-// test_13();
-test_14();
-test_15();
-test_16();
