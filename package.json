@@ -6,7 +6,7 @@
         "format": "node_modules/.bin/prettier --write . --tab-width 4 \"src/*.js\"",
         "test": "./scripts/test.sh",
         "start": "node node_modules/js-slang/dist/repl/repl.js --chapter=4 -e \"$(< source-1-type-inference.js)\"",
-        "bundle": "mkdir -p build && python3 scripts/pack.py"
+        "bundle": "python3 scripts/pack.py"
     },
     "dependencies": {
         "js-slang": "^0.4.33",
