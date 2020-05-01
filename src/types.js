@@ -33,6 +33,7 @@ const bool_type = list("primitive", "bool");
 const number_type = list("primitive", "number");
 const undefined_type = list("primitive", "undefined");
 const string_type = list("primitive", "string");
+const null_type = list("primitive", "null");
 
 /* function type */
 function make_function_type(param_types, return_type) {
