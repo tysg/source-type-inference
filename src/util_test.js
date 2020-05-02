@@ -24,7 +24,7 @@ function check_type_var(number, sfs) {
     return sigma(make_new_T_type(number), sfs);
 }
 
-function iterate_sigma(sfs, n) {
+function enumerate_sigma(sfs, n) {
     const m = build_list(n, (x) => x + 1);
     for_each(
         (num) =>
@@ -34,3 +34,6 @@ function iterate_sigma(sfs, n) {
         m
     );
 }
+
+// for backward compatibility
+const iterate_sigma = enumerate_sigma;
