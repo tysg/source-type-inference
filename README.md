@@ -22,7 +22,7 @@ The project uses the Source Programs testing framework. To run the tests, run
 yarn bundled && yarn test
 ```
 
-The test specifications at located under `__tests__`.
+The test specifications are located under `__tests__/`.
 
 
 Program Specifications
@@ -41,7 +41,7 @@ Type inference for Source 1 supports:
 ### Type Variable
 Every node on the program syntax tree has a unique type variable. A type variable is 
 represented by a tagged list:
-```
+```js
 list("type_variable", "T", 1)
 ```
 
@@ -65,14 +65,9 @@ a type variable to every node of the tree.
 
 ```js
 list("name", name) -> list("name", name, type_var)
-// for primitive operators
-list("name", op_name, loc) -> list("name", name, type_var, loc)
-
+list("name", op_name, loc) -> list("name", name, type_var, loc) // for primitive operators
 list("conditional_expression", pred, cons, alt) -> list("conditional_expression", annotated_pred, annotated_cons, annotated_alt, type_var)
-
-
 list("application", operator, operands) -> list("application", annotated_op, annotated_operands, type_var)
-
 list("function_definition", [param], body) -> list("function_definition", [annotated_param], annotated_body, type_var)
 
 ```
@@ -111,7 +106,7 @@ We always keep the set of constraints in solved forms, thus `solve` is
 called whenever we encounter a new constraint.
 
 
-### `sigma` function
+### The `sigma` Function
 `sigma` function is used to retrieve the type of a type variable. 
 `sigma(t)` is inductively defined as:
 * if `t` is a base type, then `sigma(t) = t`
