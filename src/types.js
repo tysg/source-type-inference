@@ -86,6 +86,7 @@ function equal_type(t1, t2) {
         : equal(t1, t2);
 }
 
+// used when a T type is encountered and it's actual type is addable
 function change_type_var_to_addable(type_var) {
     if (!is_type_var(type_var)) {
         error("is not a type var", type_var);
